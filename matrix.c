@@ -30,7 +30,7 @@ int main(){
 
     if(matrix_a == NULL || matrix_b == NULL) {
         return -1;
-    } // pre check
+    } // pre check - 행렬이 정상적으로 생성되었는지 확인
     
     do
     {
@@ -49,9 +49,9 @@ int main(){
         switch (command)
         {
         case 'z': case 'Z' : 
-            fill_data(matrix_a, row, col);
-            fill_data(matrix_b, row, col);
-            printf("Matrix Initialized\n");
+            fill_data(matrix_a, row, col); 
+            fill_data(matrix_b, row, col); // 행렬 a, b에 값 채우기
+            printf("Matrix Initialized\n"); 
             break;
 
         case 'p' : case 'P':
@@ -59,37 +59,37 @@ int main(){
             printf("matrix_a\n");
             print_matrix(matrix_a, row, col);
             printf("matrix_b\n"); 
-            print_matrix(matrix_b, row, col);
+            print_matrix(matrix_b, row, col); // 행렬 a, b 출력
             break;
 
         case 'a': case 'A' : 
             printf("Add two matrices\n");
-            addition_matrix(matrix_a, matrix_b, row, col);
+            addition_matrix(matrix_a, matrix_b, row, col); // 행렬 a+b 출력
             break;
 
         case 's' : case 'S' :
             printf("Subtract two matrices\n");
-            subtraction_matrix(matrix_a, matrix_b, row, col);
+            subtraction_matrix(matrix_a, matrix_b, row, col); //행렬 a-b 출력
             break;
         case 't' : case 'T': 
             printf("Transpose matrix\n");
             printf("matrix_a\n");
             transpose_matrix(matrix_a, matrix_a_t, col, row);
-            print_matrix(matrix_a_t, col, row);
+            print_matrix(matrix_a_t, col, row); // a의 전치행렬을 a_t에 대입 후 출력
             break;
 
         
         case 'm' : case 'M':
             printf("Multiply matrix_a with transposed matrix_a \n");
             transpose_matrix(matrix_a, matrix_a_t, col, row);
-            multiply_matrix(matrix_a, matrix_a_t, row, col);
+            multiply_matrix(matrix_a, matrix_a_t, row, col); // a * a_t 의 값 출력
             break;
         
         case 'q': case 'Q':
             printf("Free all matrices..\n");
             free_matrix(matrix_a_t, col, row);
             free_matrix(matrix_a, row, col);
-            free_matrix(matrix_b, row, col);
+            free_matrix(matrix_b, row, col); // 행렬들에 할당했던 공간 해제
             break;
 
         default:
@@ -97,24 +97,24 @@ int main(){
             break;
         }
             
-    } while (command != 'q' && command !='Q');
+    } while (command != 'q' && command !='Q'); // q, Q가 들어오면 종료 (할당했던 공간 해제 후 종료된다.)
     
     return 1;
 }
 
-int** create_maxtrix(int row, int col){
+int** create_maxtrix(int row, int col){ 
     
    if (row <= 0 || col <= 0) {
       printf("Check the size of row and col!\n");
       return NULL;
    } // pre check
      
-    int** x = (int**) malloc(row*sizeof(int*));
+    int** x = (int**) malloc(row*sizeof(int*)); // 행에 대한 공간 할당
     
     for (int i = 0; i < row; i++)
     {
         x[i] = (int*) malloc(col*sizeof(int));
-    }
+    } // 열에 대한 공간 할당
 
     
    if (x == NULL) {
@@ -137,7 +137,7 @@ void print_matrix(int** print_matrix, int row, int col){
             printf("%d ", print_matrix[i][j]);
         }
         printf("\n");
-    }
+    } // 중첩 for문으로 행렬 데이터 순차적으로 출력
 
     if(print_matrix == NULL){
         printf("Memory allocation failed\n");
@@ -155,9 +155,9 @@ int free_matrix(int** matrix, int row, int col){
     for (int i = 0; i < row; i++)
     {
         free(*(matrix+i));
-    }
+    } // 열에 대한 포인팅 해제
 
-    free(matrix);
+    free(matrix); // 행에 대한 포인팅 해제
 
     return 1;
 } // 행렬에 할당했던 공간을 해제한다.
@@ -172,7 +172,7 @@ int fill_data(int** matrix, int row, int col){
     for (int i = 0; i < row; i++)
         for(int j = 0; j< col; j++){
            matrix[i][j] = rand()%20;
-    }
+    } // 0~19 사이의 값을 랜덤으로 채워넣기
 
      if (matrix == NULL) {
       printf("Memory Allocation Failed.\n");
@@ -194,21 +194,22 @@ int addition_matrix(int** matrix_a, int** matrix_b, int row, int col){
         for(int j = 0; j< col; j++){
             *(*(matrix_sum_temp+i)+j) = *(*(matrix_a+i)+j) + *(*(matrix_b+i)+j); 
         }
-    }
+    } // (a+b)[i][j] = a[i][j] + b[i][j]
 
-    print_matrix(matrix_sum_temp, row, col);
-    free_matrix(matrix_sum_temp, row, col);
+    print_matrix(matrix_sum_temp, row, col); // 결과 출력
+    free_matrix(matrix_sum_temp, row, col); // 임시공간 할당 해제
+
+
+    if (matrix_a == NULL || matrix_b == NULL || matrix_sum_temp == NULL) {
+      printf("Memory Allocation Failed.\n");
+      return -1;
+   } // post check
 
     if (matrix_sum_temp != NULL)
     {
         printf("temp memory deallocation failed\n");
         return -1;
     } // 덧셈을 위한 임시공간 할당 해제 check
-
-    if (matrix_a == NULL || matrix_b == NULL) {
-      printf("Memory Allocation Failed.\n");
-      return -1;
-   } // post check
 
     return 1;    
 } // 두 행렬의 덧셈
@@ -225,7 +226,12 @@ int subtraction_matrix(int** matrix_a, int** matrix_b, int row, int col){
         for(int j = 0; j< col; j++){
             *(*(matrix_sub_temp+i)+j) = *(*(matrix_a+i)+j) - *(*(matrix_b+i)+j); 
         }
-    }
+    } // (a-b)[i][j] = a[i][j] - b[i][j]
+
+    if (matrix_a == NULL || matrix_b == NULL || matrix_sub_temp == NULL) {
+      printf("Memory Allocation Failed.\n");
+      return -1;
+   } // post check
 
     print_matrix(matrix_sub_temp, row, col);
     free_matrix(matrix_sub_temp, row, col);
@@ -234,13 +240,8 @@ int subtraction_matrix(int** matrix_a, int** matrix_b, int row, int col){
     {
         printf("temp memory deallocation failed\n");
         return -1;
-    } // 덧셈을 위한 임시공간 할당 해제 check
+    } // 뺄셈을 위한 임시공간 할당 해제 check
 
-    if (matrix_a == NULL || matrix_b == NULL) {
-      printf("Memory Allocation Failed.\n");
-      return -1;
-   } // post check
-    
     return 1;
 } // 두 행렬의 뺄셈
 
@@ -282,8 +283,12 @@ int multiply_matrix(int** matrix_a, int** matrix_t, int row, int col){ // a * a(
                 temp_sum += matrix_a[row_a][i]*matrix_t[i][row_t];
             }
             matrix_mul_temp[row_a][row_t] = temp_sum;
-        }
+        } // 행렬 곱
 
+    if (matrix_a == NULL || matrix_t == NULL || matrix_mul_temp == NULL) {
+        printf("Memory Allocation Failed.\n");
+        return -1;
+         } // post check
 
     print_matrix(matrix_mul_temp, row, row);
     free_matrix(matrix_mul_temp, row, row);
@@ -293,11 +298,5 @@ int multiply_matrix(int** matrix_a, int** matrix_t, int row, int col){ // a * a(
         return -1;
     } // 곱셈 임시공간 할당 해제 확인
     
-
-    if (matrix_a == NULL || matrix_t == NULL) {
-        printf("Memory Allocation Failed.\n");
-        return -1;
-         } // post check
-
     return 1;
 } // 두 행렬의 곱셈
