@@ -143,7 +143,9 @@ void print_matrix(int** print_matrix, int row, int col){
         printf("Memory allocation failed\n");
         return;
     } // post check
-} //행렬 시작주소와 행/렬 갯수를 받아 출력하여준다.
+
+    return;
+} //행렬 시작주소와 행,열 갯수를 받아 출력하여준다.
 
 int free_matrix(int** matrix, int row, int col){
 
@@ -180,7 +182,7 @@ int fill_data(int** matrix, int row, int col){
    } // post check
 
    return 1;
-} // 행렬의 시작주소, 행/렬 갯수를 받아 무작위 한자리 정수로 채운다.
+} // 행렬의 시작주소, 행,열 갯수를 받아 무작위 한자리 정수로 채운다.
 
 int addition_matrix(int** matrix_a, int** matrix_b, int row, int col){
     if (row <= 0 || col <= 0) {
@@ -196,20 +198,14 @@ int addition_matrix(int** matrix_a, int** matrix_b, int row, int col){
         }
     } // (a+b)[i][j] = a[i][j] + b[i][j]
 
-    print_matrix(matrix_sum_temp, row, col); // 결과 출력
-    free_matrix(matrix_sum_temp, row, col); // 임시공간 할당 해제
-
-
+    
     if (matrix_a == NULL || matrix_b == NULL || matrix_sum_temp == NULL) {
       printf("Memory Allocation Failed.\n");
       return -1;
    } // post check
 
-    if (matrix_sum_temp != NULL)
-    {
-        printf("temp memory deallocation failed\n");
-        return -1;
-    } // 덧셈을 위한 임시공간 할당 해제 check
+    print_matrix(matrix_sum_temp, row, col); // 결과 출력
+    free_matrix(matrix_sum_temp, row, col); // 임시공간 할당 해제
 
     return 1;    
 } // 두 행렬의 덧셈
@@ -235,12 +231,6 @@ int subtraction_matrix(int** matrix_a, int** matrix_b, int row, int col){
 
     print_matrix(matrix_sub_temp, row, col);
     free_matrix(matrix_sub_temp, row, col);
-
-    if (matrix_sub_temp != NULL)
-    {
-        printf("temp memory deallocation failed\n");
-        return -1;
-    } // 뺄셈을 위한 임시공간 할당 해제 check
 
     return 1;
 } // 두 행렬의 뺄셈
@@ -292,11 +282,6 @@ int multiply_matrix(int** matrix_a, int** matrix_t, int row, int col){ // a * a(
 
     print_matrix(matrix_mul_temp, row, row);
     free_matrix(matrix_mul_temp, row, row);
-
-    if (matrix_mul_temp != NULL){
-        printf("Memory Deallocation Failed\n");
-        return -1;
-    } // 곱셈 임시공간 할당 해제 확인
     
     return 1;
 } // 두 행렬의 곱셈
